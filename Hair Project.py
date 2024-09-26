@@ -19,6 +19,8 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import random
 import shutil
 
+#Importation of pictures
+
 os.chdir(r"C:\Users\sh032\hair")
 os.makedirs("train/Curly_Hair")
 os.makedirs("train/Straight_Hair")
@@ -49,6 +51,8 @@ for c in random.sample(os.listdir(r"C:\Users\sh032\hair\Wavy Hair"),100):
                        shutil.move(chemin,r"test/Wavy_Hair")
 os.chdir("../../")
 
+#Preprocessing of pictures using VGG16 preprocessing
+
 train_path=r"C:\Users\sh032\hair\train"
 test_path=r"C:\Users\sh032\hair\test"
 
@@ -58,7 +62,7 @@ train_batches=ImageDataGenerator(preprocessing_function=tf.keras.applications.vg
 test_batches=ImageDataGenerator(preprocessing_function=tf.keras.applications.vgg16.preprocess_input).flow_from_directory(directory=r"C:\Users\sh032\hair\test",target_size=(300,300),classes=["Curly_Hair","Straight_Hair","Wavy_Hair"],batch_size=10)
 
 
-imgs,labels=next(test_batches)
+#Model
 
 model=Sequential([
     keras.Input(shape=(300,300,3)),
@@ -94,23 +98,12 @@ model.compile(
 
 model.fit(train_batches,validation_data=test_batches,epochs=10,verbose=2)
 
-proba=model.predict(test_batches)
+#To make a new prediction
 
+def prediction(picture_path):
 
-predictions=[]
-for prob in proba:
-    predictions.append(np.argmax(prob))
-    
-predictions=np.array(predictions).reshape((len(predictions),1))
-print(predictions)
-
-image=test_batches[10][0][5]
-
-img=np.expand_dims(image, axis=0)
-print(np.argmax(model.predict(img)))
-
-import matplotlib.pyplot as plt
-
-plt.imshow(image)
-plt.show()
-
+  pic=Image.open(picture_path)
+  pic=pic.resize(300,300)
+  pic=np.array(pic)
+  pic=np.expand_dims(picture,axis=0)
+  return np.argmax(model.predict(pic))
