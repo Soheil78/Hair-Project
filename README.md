@@ -1,8 +1,8 @@
 # Hair-Project
-The purpose of my project was to create a model that recognize the hair type of a person based on its picture.
+The purpose of my project was to create a model that recognizes the hair type of the person based on a picture.
 
-In order to do that, I programmed a CNN and I preprocessed pictures with vgg16.
-For this project, I used the "Three Hair Types" dataset that I found on Kaggle that contain a thousands of images for three different hair types: straight hair, curly hair and wavy hair. The creator of this dataset is vyom bhatia and he precised: "I scrapped all these images from google images using a chrome extension and sorted them out, image by image. I feel bad because I cannot give credit to the owners and Data Ethics is something I have to improve in as a person."
+In order to do that, I programmed a CNN and I preprocessed pictures with VGG16 preprocessing.
+For this project, I used the "Three Hair Types" dataset that I found on Kaggle which contains a thousands of images for three different hair types: straight hair, curly hair and wavy hair. The creator of this dataset is vyom bhatia and he precised: "I scrapped all these images from google images using a chrome extension and sorted them out, image by image. I feel bad because I cannot give credit to the owners and Data Ethics is something I have to improve in as a person."
 Here is the link of the dataset: https://www.kaggle.com/datasets/vyombhatia/the-three-hair-types/data
 
 Here is the code that I used:
@@ -20,6 +20,8 @@ from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import random
 import shutil
+
+#Importation of pictures
 
 os.chdir(r"C:\Users\sh032\hair")
 os.makedirs("train/Curly_Hair")
@@ -51,6 +53,8 @@ chemin=os.path.join(r"C:\Users\sh032\hair\Wavy Hair",c)
 shutil.move(chemin,r"test/Wavy_Hair")
 os.chdir("../../")
 
+#Preprocessing of pictures
+
 train_path=r"C:\Users\sh032\hair\train"
 test_path=r"C:\Users\sh032\hair\test"
 
@@ -62,6 +66,8 @@ imgs,labels=next(test_batches)
 
 model=Sequential([
 keras.Input(shape=(300,300,3)),
+
+#The CNN model
 
 Conv2D(filters=32, kernel_size=(3,3), padding="same"),
 BatchNormalization(),
@@ -92,12 +98,12 @@ metrics=["accuracy"]
 
 model.fit(train_batches,validation_data=test_batches,epochs=10,verbose=2)
 
-proba=model.predict(test_batches)
+#to make predictions
 
-predictions=[]
-for prob in proba:
-predictions.append(np.argmax(prob))
-
-predictions=np.array(predictions).reshape((len(predictions),1))
-print(predictions)
+def prediction(picture_path):
+  pic=Image.open(picture_path)
+  pic=pic.resize(300,300)
+  pic=np.array(pic)
+  pic=np.expand_dims(picture,axis=0)
+  return np.argmax(model.predict(pic))
 
