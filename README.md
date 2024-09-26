@@ -101,6 +101,7 @@ model.fit(train_batches,validation_data=test_batches,epochs=10,verbose=2)
 #to make predictions
 
 def prediction(picture_path):
+
   pic=Image.open(picture_path)
   pic=pic.resize(300,300)
   pic=np.array(pic)
